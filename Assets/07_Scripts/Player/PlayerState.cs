@@ -50,7 +50,7 @@ public class IdleState : IPlayerState
 
         if(Input.GetMouseButtonDown(0) && player.CanThrow())
         {
-            player.ChangeState(new ThrowKnifeState());
+            player.ChangeState(new ThrowWeaponState());
         }
 
         if(Input.GetKeyDown(KeyCode.Y))
@@ -65,6 +65,11 @@ public class IdleState : IPlayerState
 
     public void FixedUpdateState(PlayerMovement player)
     {
+        // 무기를 던졌다면
+        if (player.isThrow)
+        {
+            player.ReturnWeaponInHand();
+        }
     }
 }
 
@@ -105,12 +110,18 @@ public class RunningState : IPlayerState
 
         if(Input.GetMouseButtonDown(0))
         {
-            player.ChangeState(new ThrowKnifeState());
+            player.ChangeState(new ThrowWeaponState());
         }
+
     }
 
     public void FixedUpdateState(PlayerMovement player)
     {
+        if (player.isThrow)
+        {
+            player.ReturnWeaponInHand();
+        }
+
         float v = Input.GetAxis("Vertical");
         Vector3 moveDir = (Vector3.forward * v);
 
@@ -170,12 +181,12 @@ public class AttackState : IPlayerState
     }
 }
 
-public class ThrowKnifeState : IPlayerState
+public class ThrowWeaponState : IPlayerState
 {
     public void EnterState(PlayerMovement player)
     {
-        player.animator.SetTrigger("ThrowKnife");
-        player.ThrowKnifeAttack();
+        player.animator.SetTrigger("ThrowWeapon");
+        player.ThrowWeaponAttack();
     }
 
     public void UpdateState(PlayerMovement player)

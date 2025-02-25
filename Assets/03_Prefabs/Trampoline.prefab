@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 3673403059678394082}
   - component: {fileID: 8372964545063855793}
   - component: {fileID: 3963253969961926616}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Trampoline
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -27,7 +27,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 463894735973614313}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.000000021855694, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -11.15, y: 0.000000008875509, z: -1.4679096}
   m_LocalScale: {x: 20, y: 20, z: 20}
   m_ConstrainProportionsScale: 0
@@ -117,7 +117,7 @@ GameObject:
   m_Component:
   - component: {fileID: 722635545337589204}
   - component: {fileID: 5328263419321358381}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: JumpFloor
   m_TagString: Floor
   m_Icon: {fileID: 0}
