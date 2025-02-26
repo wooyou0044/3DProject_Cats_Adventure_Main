@@ -11,7 +11,7 @@ public class ConversationUI : MonoBehaviour
     [SerializeField] string[] conversations;
 
     Animator arrowAni;
-    bool isAlready;
+    public bool isAlready { get; private set; }
     int charIndex;
     char[] converseArr;
 
@@ -33,10 +33,10 @@ public class ConversationUI : MonoBehaviour
 
     public void SetConverstation(int converseIndex)
     {
+        charIndex = 0;
         conversationText.text = string.Empty;
         SeparateConversation(converseIndex);
-        //StartCoroutine(PrintAllConversation(converseArr));
-        StartCoroutine(PrintConverstion(converseArr));
+        StartCoroutine(PrintAllConversation(converseArr));
     }
 
     void SeparateConversation(int index)
@@ -49,29 +49,25 @@ public class ConversationUI : MonoBehaviour
         }
     }
 
-    //IEnumerator PrintAllConversation(char[] chars)
-    //{
-    //    if (charIndex >= chars.Length)
-    //    {
-    //        Debug.Log("글자 수 넘어감");
-    //        isAlready = true;
-    //        yield break;
-    //    }
-
-    //    isAlready = false;
-
-    //    StartCoroutine(PrintConverstion(chars[charIndex]));
-
-    //    yield return new WaitWhile(() => charIndex <= chars.Length - 1);
-
-    //    textArrow.gameObject.SetActive(true);
-    //}
-
-    IEnumerator PrintConverstion(char[] chars)
+    IEnumerator PrintAllConversation(char[] chars)
     {
-        yield return new WaitForSeconds(0.5f);
-        conversationText.text += chars[charIndex];
-        charIndex++;
-        yield return new WaitWhile(() => charIndex <= chars.Length - 1);
+        // 나중에 글자 나오고 스페이스바 누르게 만들 bool형
+        isAlready = false;
+        while(charIndex < chars.Length - 1)
+        {
+            yield return new WaitForSeconds(0.1f);
+
+            conversationText.text += chars[charIndex++];
+        }
+        if (charIndex >= chars.Length)
+        {
+            Debug.Log("글자 수 넘어감");
+            isAlready = true;
+            yield break;
+        }
+        yield return new WaitWhile(() => charIndex < chars.Length - 1);
+        // 옆에 조건문이 참일때 다음으로 넘어감
+        textArrow.gameObject.SetActive(true);
+        isAlready = true;
     }
 }

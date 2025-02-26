@@ -253,7 +253,7 @@ public class DoCooperateState : IPlayerState
 
     public void UpdateState(PlayerMovement player)
     {
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Return))
         {
             spaceNum++;
             if (player.currentAction == ActionState.NPC)
