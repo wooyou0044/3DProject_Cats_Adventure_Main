@@ -1,16 +1,29 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using Unity.Burst.CompilerServices;
 using UnityEngine;
+using static UnityEditor.Experimental.GraphView.GraphView;
 
 public class PlayerMovement : MonoBehaviour
 {
+    public enum ActionState
+    {
+        None,
+        NPC,
+        Movable,
+        Portal,
+        Wire
+    }
+    
     IPlayerState currentState;
 
     public Animator animator { get; set; }
     public Rigidbody rigid { get; set; }
     public bool isFloor { get; set; }
     public bool isThrow { get; set; }
+    public bool isColliderActive { get; set; }
+    public bool isCanCooperate { get; set; }
 
     public float turnSpeed = 80.0f;
     public float moveSpeed = 10.0f;
@@ -26,8 +39,11 @@ public class PlayerMovement : MonoBehaviour
     GameManager gameManager;
 
     GameObject throwWeapon;
+    GameObject hitColliderObject;
 
     Rigidbody throwWeaponRigid;
+
+    public ActionState currentAction { get; private set; }
 
     void Awake()
     {
@@ -138,18 +154,35 @@ public class PlayerMovement : MonoBehaviour
     {
         Ray ray = new Ray(eyeTrans.position, transform.forward);
         RaycastHit hit;
-        int layerMask = LayerMask.GetMask("NPC", "Movable");
+        int layerMask = LayerMask.GetMask("NPC");
 
-        if(Physics.Raycast(ray, out hit, 3f, layerMask))
+        if(Physics.Raycast(ray, out hit, 2f, layerMask))
         {
-            Debug.Log("ºÎµúÇûÀ½");
-            Debug.Log("layerMask : " + layerMask);
+            Debug.Log(hit.collider.gameObject);
+            isCanCooperate = true;
+            currentAction = ActionState.NPC;
+            hitColliderObject = hit.collider.gameObject;
             gameManager.SetPopUpUIType(layerMask);
             gameManager.SetPopUpActive(true, hit.collider.transform);
         }
         else
         {
+            if(isCanCooperate == true)
+            {
+                currentAction = ActionState.None;
+                isCanCooperate = false;
+            }
+
+            if (gameManager.isCanvasOpen() == true)
+            {
+                gameManager.SetPopUpActive(false);
+            }
         }
+    }
+
+    public GameObject SetHitObject()
+    {
+        return hitColliderObject == null ? null : hitColliderObject;
     }
 
     private void OnDrawGizmos()
@@ -163,11 +196,58 @@ public class PlayerMovement : MonoBehaviour
         Gizmos.DrawLine(start, end);
     }
 
+    public void ChangeYAnimation()
+    {
+        switch (currentAction)
+        {
+            case ActionState.NPC:
+                animator.SetBool("Talking", true);
+                rigid.constraints = RigidbodyConstraints.FreezeAll;
+                break;
+            case ActionState.Movable:
+                animator.SetBool("MovingStuff", true);
+                break;
+        }
+    }
+
+    public void ConversationWithNPC(int num)
+    {
+        gameManager.SetNPCTalkCanvasActive(true);
+        gameManager.SetConversationInUI(num);
+    }
+
     void OnCollisionEnter(Collision collision)
     {
         if(collision.gameObject.CompareTag("Floor"))
         {
             isFloor = true;
+        }
+    }
+
+    private void OnCollisionStay(Collision collision)
+    {
+        if(collision.gameObject.layer == LayerMask.NameToLayer("Movable"))
+        {
+            isCanCooperate = true;
+            isColliderActive = true;
+            currentAction = ActionState.Movable;
+            hitColliderObject = collision.collider.gameObject;
+            gameManager.SetPopUpUIType(LayerMask.GetMask("Movable"));
+            gameManager.SetPopUpActive(true, collision.collider.transform);
+        }
+    }
+
+    private void OnCollisionExit(Collision collision)
+    {
+        if(isCanCooperate == true)
+        {
+            currentAction = ActionState.None;
+            isCanCooperate = false;
+        }
+
+        if(isColliderActive == true)
+        {
+            isColliderActive = false;
         }
     }
 }

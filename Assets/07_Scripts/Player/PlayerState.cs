@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static PlayerMovement;
 
 public interface IPlayerState
 {
@@ -14,6 +15,8 @@ public class IdleState : IPlayerState
     public void EnterState(PlayerMovement player)
     {
         //player.animator.SetBool("IsRun", false);
+        player.animator.SetBool("Talking", false);
+        player.animator.SetBool("MovingStuff", false);
     }
 
     public void UpdateState(PlayerMovement player)
@@ -53,19 +56,26 @@ public class IdleState : IPlayerState
             player.ChangeState(new ThrowWeaponState());
         }
 
-        if(Input.GetKeyDown(KeyCode.Y))
+        if(player.isCanCooperate == true)
         {
-            // NPC와 대화
-            // 물건 밀기
-            // 물건 잡기
-            // 워프 안에 들어가기
-            // 물건 놓기/던지기
+            if (Input.GetKeyDown(KeyCode.Y))
+            {
+                player.ChangeState(new DoCooperateState());
+                // NPC와 대화
+                // 물건 밀기
+                // 물건 잡기
+                // 워프 안에 들어가기
+                // 물건 놓기/던지기
+            }
         }
     }
 
     public void FixedUpdateState(PlayerMovement player)
     {
-        player.DoEyeSight();
+        if(player.isColliderActive == false)
+        {
+            player.DoEyeSight();
+        }
         // 무기를 던졌다면
         if (player.isThrow)
         {
@@ -78,7 +88,8 @@ public class RunningState : IPlayerState
 {
     public void EnterState(PlayerMovement player)
     {
-
+        player.animator.SetBool("Talking", false);
+        player.animator.SetBool("MovingStuff", false);
     }
     public void UpdateState(PlayerMovement player)
     {
@@ -114,6 +125,18 @@ public class RunningState : IPlayerState
             player.ChangeState(new ThrowWeaponState());
         }
 
+        if (Input.GetKeyDown(KeyCode.Y))
+        {
+            if(player.isCanCooperate == true)
+            {
+                player.ChangeState(new DoCooperateState());
+                // NPC와 대화
+                // 물건 밀기
+                // 물건 잡기
+                // 워프 안에 들어가기
+                // 물건 놓기/던지기
+            }
+        }
     }
 
     public void FixedUpdateState(PlayerMovement player)
@@ -128,7 +151,10 @@ public class RunningState : IPlayerState
 
         player.transform.Translate(moveDir.normalized * player.moveSpeed * Time.deltaTime);
 
-        player.DoEyeSight();
+        if(player.isColliderActive == false)
+        {
+            player.DoEyeSight();
+        }
     }
 }
 
@@ -211,4 +237,35 @@ public class ThrowWeaponState : IPlayerState
     {
     }
 }
+
+public class DoCooperateState : IPlayerState
+{
+    int spaceNum;
+
+    public void EnterState(PlayerMovement player)
+    {
+        player.ChangeYAnimation();
+        if (player.currentAction == ActionState.NPC)
+        {
+            player.ConversationWithNPC(spaceNum);
+        }
+    }
+
+    public void UpdateState(PlayerMovement player)
+    {
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            spaceNum++;
+            if (player.currentAction == ActionState.NPC)
+            {
+                player.ConversationWithNPC(spaceNum);
+            }
+        }
+    }
+
+    public void FixedUpdateState(PlayerMovement player)
+    {
+    }
+}
+
 // 공격받으면 체력 UI 뜨는 것 추가 필요

@@ -5,15 +5,6 @@ using UnityEngine.UI;
 
 public class PopUpUI : MonoBehaviour
 {
-    public enum LayerType
-    {
-        None,
-        NPC,
-        Movable,
-        Portal,
-        Wire
-    }
-
     [SerializeField] Image popUpImage;
     [SerializeField] Text popUpText;
     [SerializeField] Image popUpWireImage;
@@ -29,13 +20,12 @@ public class PopUpUI : MonoBehaviour
         
     }
 
-    public void SetPopUpText(LayerType type)
+    public void SetPopUpText(PlayerMovement.ActionState type)
     {
         switch (type)
         {
-            case LayerType.NPC:
-                Debug.Log("NPC");
-                popUpText.fontSize = 50;
+            case PlayerMovement.ActionState.NPC:
+                popUpText.fontSize = 45;
                 // 작동
                 popUpText.text = "작동";
                 if (popUpImage.gameObject.activeSelf == false)
@@ -43,9 +33,8 @@ public class PopUpUI : MonoBehaviour
                     popUpImage.gameObject.SetActive(true);
                 }
                 break;
-            case LayerType.Movable:
-                Debug.Log("Movable");
-                popUpText.fontSize = 50;
+            case PlayerMovement.ActionState.Movable:
+                popUpText.fontSize = 40;
                 // 2D - 줍기
                 // 잡기
                 popUpText.text = "잡기";
@@ -54,11 +43,11 @@ public class PopUpUI : MonoBehaviour
                     popUpImage.gameObject.SetActive(true);
                 }
                 break;
-            case LayerType.Portal:
+            case PlayerMovement.ActionState.Portal:
                 popUpText.fontSize = 45;
                 // 들어가기 - 나가기
                 break;
-            case LayerType.Wire:
+            case PlayerMovement.ActionState.Wire:
                 // 글자가 안 뜸
                 break;
         }
