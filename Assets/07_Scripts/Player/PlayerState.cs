@@ -244,6 +244,7 @@ public class DoCooperateState : IPlayerState
 
     public void EnterState(PlayerMovement player)
     {
+        spaceNum = 0;
         player.ChangeYAnimation();
         if (player.currentAction == ActionState.NPC)
         {
@@ -255,16 +256,38 @@ public class DoCooperateState : IPlayerState
     {
         if (Input.GetKeyDown(KeyCode.Return))
         {
-            spaceNum++;
-            if (player.currentAction == ActionState.NPC)
+            if(player.GetIsConverseAlready() == true)
             {
-                player.ConversationWithNPC(spaceNum);
+                spaceNum++;
+            }
+            player.ConversationWithNPC(spaceNum);
+        }
+
+        if (player.GetIsConverseAlready() == true && player.isConverseEnd == true)
+        {
+            player.ChangeState(new IdleState());
+        }
+
+        if(player.currentAction == ActionState.Movable)
+        {
+            Debug.Log(player.currentAction);
+            float v = Input.GetAxis("Vertical");
+            Debug.Log("v : " + v);
+            if(v != 0)
+            {
+                // 위에 떠올라 있는 Canvas 끄기
+                Debug.Log("움직이고 있음");
+            }
+            else
+            {
+                player.ChangeState(new IdleState());
             }
         }
     }
 
     public void FixedUpdateState(PlayerMovement player)
     {
+
     }
 }
 

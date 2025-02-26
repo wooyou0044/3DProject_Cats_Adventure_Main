@@ -83,14 +83,48 @@ public class GameManager : MonoBehaviour
 
     public void SetNPCTalkCanvasActive(bool isActive)
     {
+        if(isActive == true)
+        {
+            popUpCanvas.gameObject.SetActive(false);
+        }
         NPCTalkCanvas.gameObject.SetActive(isActive);
     }
 
     public void SetConversationInUI(int clickNum)
     {
-        if(NPCTalkCanvas.gameObject.activeSelf== true)
+        if (conversationUI.isEnd == true)
+        {
+            //SetNPCTalkCanvasActive(false);
+            ReceiveConversationReset();
+        }
+        if (conversationUI.isAlready == false && playerMove.isPressEnter == true)
+        {
+            SendEnterPressed();
+        }
+        if (conversationUI.isAlready == true)
         {
             conversationUI.SetConverstation(clickNum);
         }
+    }
+
+    public bool SendConversationEnd()
+    {
+        return conversationUI.isEnd;
+    }
+
+    public void ReceiveConversationReset()
+    {
+        conversationUI.isEnd = false;
+        conversationUI.isEnterPressed = false;
+    }
+
+    public bool SendMessageAllRepresent()
+    {
+        return conversationUI.isAlready;
+    }
+
+    void SendEnterPressed()
+    {
+        conversationUI.isEnterPressed = (playerMove.isPressEnter == true)? true : false;
     }
 }

@@ -10,20 +10,24 @@ public class ConversationUI : MonoBehaviour
     [TextArea]
     [SerializeField] string[] conversations;
 
-    Animator arrowAni;
-    public bool isAlready { get; private set; }
+    public bool isAlready { get; set; }
+    public bool isEnd { get; set; }
+    public bool isEnterPressed { get; set; }
+
     int charIndex;
+    int conversationsIndex;
     char[] converseArr;
 
     void Awake()
     {
-        arrowAni = textArrow.GetComponent<Animator>();
+        isAlready = true;
     }
 
     void Start()
     {
         textArrow.gameObject.SetActive(false);
         charIndex = 0;
+        isEnd = false;
     }
 
     void Update()
@@ -34,18 +38,30 @@ public class ConversationUI : MonoBehaviour
     public void SetConverstation(int converseIndex)
     {
         charIndex = 0;
+        conversationsIndex = converseIndex;
         conversationText.text = string.Empty;
-        SeparateConversation(converseIndex);
-        StartCoroutine(PrintAllConversation(converseArr));
+        textArrow.gameObject.SetActive(false);
+        if (converseIndex <= conversations.Length - 1)
+        {
+            SeparateConversation(converseIndex);
+            StartCoroutine(PrintAllConversation(converseArr));
+        }
+        else 
+        {
+            StartCoroutine(ConversationDone());
+        }
     }
 
     void SeparateConversation(int index)
     {
-        string converse = conversations[index];
-        converseArr = new char[conversations[index].Length];
-        for (int i = 0; i < converseArr.Length; i++)
+        if(index <= conversations.Length - 1)
         {
-            converseArr[i] = converse[i];
+            string converse = conversations[index];
+            converseArr = new char[conversations[index].Length];
+            for (int i = 0; i < converseArr.Length; i++)
+            {
+                converseArr[i] = converse[i];
+            }
         }
     }
 
@@ -55,19 +71,37 @@ public class ConversationUI : MonoBehaviour
         isAlready = false;
         while(charIndex < chars.Length - 1)
         {
-            yield return new WaitForSeconds(0.1f);
+            if (isEnterPressed == true)
+            {
+                break;
+            }
 
-            conversationText.text += chars[charIndex++];
+            yield return new WaitForSeconds(0.1f);
+            conversationText.text += chars[charIndex];
+            charIndex++;
         }
-        if (charIndex >= chars.Length)
+
+        if(isEnterPressed)
         {
-            Debug.Log("글자 수 넘어감");
-            isAlready = true;
-            yield break;
+            while (charIndex < chars.Length - 1)
+            {
+                conversationText.text += chars[charIndex++];
+            }
         }
-        yield return new WaitWhile(() => charIndex < chars.Length - 1);
-        // 옆에 조건문이 참일때 다음으로 넘어감
+
         textArrow.gameObject.SetActive(true);
         isAlready = true;
+        isEnterPressed = false;
+
+        if (conversationsIndex == conversations.Length - 1)
+        {
+            isEnd = true;
+        }
+    }
+
+    IEnumerator ConversationDone()
+    {
+        gameObject.SetActive(false);
+        yield return new WaitWhile(() => isEnterPressed == true);
     }
 }

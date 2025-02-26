@@ -24,6 +24,9 @@ public class PlayerMovement : MonoBehaviour
     public bool isThrow { get; set; }
     public bool isColliderActive { get; set; }
     public bool isCanCooperate { get; set; }
+    public bool isConverseEnd { get; private set; }
+
+    public bool isPressEnter { get; set; }
 
     public float turnSpeed = 80.0f;
     public float moveSpeed = 10.0f;
@@ -158,7 +161,6 @@ public class PlayerMovement : MonoBehaviour
 
         if(Physics.Raycast(ray, out hit, 2f, layerMask))
         {
-            Debug.Log(hit.collider.gameObject);
             isCanCooperate = true;
             currentAction = ActionState.NPC;
             hitColliderObject = hit.collider.gameObject;
@@ -202,7 +204,6 @@ public class PlayerMovement : MonoBehaviour
         {
             case ActionState.NPC:
                 animator.SetBool("Talking", true);
-                rigid.constraints = RigidbodyConstraints.FreezeAll;
                 break;
             case ActionState.Movable:
                 animator.SetBool("MovingStuff", true);
@@ -212,8 +213,16 @@ public class PlayerMovement : MonoBehaviour
 
     public void ConversationWithNPC(int num)
     {
+        isConverseEnd = gameManager.SendConversationEnd();
+        isPressEnter = true;
         gameManager.SetNPCTalkCanvasActive(true);
         gameManager.SetConversationInUI(num);
+
+    }
+
+    public bool GetIsConverseAlready()
+    {
+        return gameManager.SendMessageAllRepresent();
     }
 
     void OnCollisionEnter(Collision collision)
