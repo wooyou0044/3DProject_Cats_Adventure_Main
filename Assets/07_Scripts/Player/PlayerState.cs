@@ -65,6 +65,7 @@ public class IdleState : IPlayerState
 
     public void FixedUpdateState(PlayerMovement player)
     {
+        player.DoEyeSight();
         // 무기를 던졌다면
         if (player.isThrow)
         {
@@ -126,6 +127,8 @@ public class RunningState : IPlayerState
         Vector3 moveDir = (Vector3.forward * v);
 
         player.transform.Translate(moveDir.normalized * player.moveSpeed * Time.deltaTime);
+
+        player.DoEyeSight();
     }
 }
 

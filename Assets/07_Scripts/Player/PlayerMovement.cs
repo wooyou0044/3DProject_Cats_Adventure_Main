@@ -17,10 +17,13 @@ public class PlayerMovement : MonoBehaviour
     public float jumpHeight = 2.0f;
     public int poolSize = 10;
 
+    [SerializeField] GameObject gameManagerObject;
     [SerializeField] GameObject playerWeapon;
     [SerializeField] Transform weaponPos;
     [SerializeField] Transform eyeTrans;
     [SerializeField, Range(0.5f, 3f)] float weaponThrowPower;
+
+    GameManager gameManager;
 
     GameObject throwWeapon;
 
@@ -30,6 +33,7 @@ public class PlayerMovement : MonoBehaviour
     {
         animator = GetComponent<Animator>();
         rigid = GetComponent<Rigidbody>();
+        gameManager = gameManagerObject.GetComponent<GameManager>();
     }
 
     void Start()
@@ -136,10 +140,27 @@ public class PlayerMovement : MonoBehaviour
         RaycastHit hit;
         int layerMask = LayerMask.GetMask("NPC", "Movable");
 
-        if(Physics.Raycast(ray, out hit, 5f, layerMask))
+        if(Physics.Raycast(ray, out hit, 3f, layerMask))
         {
             Debug.Log("ºÎµúÇûÀ½");
+            Debug.Log("layerMask : " + layerMask);
+            gameManager.SetPopUpUIType(layerMask);
+            gameManager.SetPopUpActive(true, hit.collider.transform);
         }
+        else
+        {
+        }
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+
+        Vector3 start = eyeTrans.position;
+        Vector3 direction = eyeTrans.forward * 3f;
+        Vector3 end = start + direction;
+
+        Gizmos.DrawLine(start, end);
     }
 
     void OnCollisionEnter(Collision collision)

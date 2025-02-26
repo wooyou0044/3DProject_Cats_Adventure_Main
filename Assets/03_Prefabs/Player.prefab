@@ -990,6 +990,37 @@ Transform:
   - {fileID: 6043388547386956058}
   m_Father: {fileID: 3546583358966859669}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2770944069841151774
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 300774199280247317}
+  m_Layer: 0
+  m_Name: RayPos
+  m_TagString: Untagged
+  m_Icon: {fileID: 3306451490063965843, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &300774199280247317
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2770944069841151774}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0.5, y: -0.5, z: -0.5, w: 0.5}
+  m_LocalPosition: {x: -0.407, y: 0.431, z: -0.011}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3723393849974081791}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2819704745031834513
 GameObject:
   m_ObjectHideFlags: 0
@@ -1314,6 +1345,7 @@ Transform:
   - {fileID: 4457998542097507304}
   - {fileID: 1835174358202003588}
   - {fileID: 3915332651101941550}
+  - {fileID: 300774199280247317}
   - {fileID: 6055235724781670600}
   - {fileID: 159370176776200591}
   - {fileID: 3187058507620953538}
@@ -1710,9 +1742,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4406586891948215016}
+  - component: {fileID: 2805085323727470666}
   m_Layer: 0
   m_Name: Hand_r_equipment
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1733,6 +1766,27 @@ Transform:
   - {fileID: 1680400874183604808}
   m_Father: {fileID: 2084370633000328747}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!135 &2805085323727470666
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4640074072615824275}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 0.11
+  m_Center: {x: 0.01, y: 0.06, z: 0.03}
 --- !u!1 &4646898660578829278
 GameObject:
   m_ObjectHideFlags: 0
@@ -1808,7 +1862,7 @@ GameObject:
   - component: {fileID: 3730302372584329363}
   m_Layer: 0
   m_Name: Chibi_Cat
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1874,7 +1928,7 @@ SkinnedMeshRenderer:
   m_Quality: 0
   m_UpdateWhenOffscreen: 0
   m_SkinnedMotionVectors: 1
-  m_Mesh: {fileID: 8074449331674078912, guid: aed13fe5e6f76da4aa6149cd601c67cd, type: 3}
+  m_Mesh: {fileID: 8074449331674078912, guid: f6ffbc983673faa43a8d1565be41fde2, type: 3}
   m_Bones:
   - {fileID: 6627955579120944185}
   - {fileID: 5896937890342645986}
@@ -2721,7 +2775,7 @@ GameObject:
   - component: {fileID: 5326110759725502242}
   m_Layer: 0
   m_Name: root
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3290,8 +3344,10 @@ MonoBehaviour:
   moveSpeed: 5
   jumpHeight: 7.5
   poolSize: 10
+  gameManagerObject: {fileID: 0}
   playerWeapon: {fileID: 2024978389152588018}
   weaponPos: {fileID: 4406586891948215016}
+  eyeTrans: {fileID: 300774199280247317}
   weaponThrowPower: 1.2
 --- !u!54 &5851609981418969049
 Rigidbody:
@@ -3429,3 +3485,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e13c82ebbc7be6f47ad7fc1f29bb77f8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerMove: {fileID: 5815734038429672501}
