@@ -112,7 +112,7 @@ public class GameManager : MonoBehaviour
         return conversationUI.isEnd;
     }
 
-    public void ReceiveConversationReset()
+    void ReceiveConversationReset()
     {
         conversationUI.isEnd = false;
         conversationUI.isEnterPressed = false;
@@ -126,5 +126,10 @@ public class GameManager : MonoBehaviour
     void SendEnterPressed()
     {
         conversationUI.isEnterPressed = (playerMove.isPressEnter == true)? true : false;
+    }
+
+    public void SetUIPutObject()
+    {
+        popUpUI.SetPopUpText(PlayerMovement.ActionState.PlaceObject);
     }
 }

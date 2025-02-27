@@ -12,6 +12,7 @@ public class PlayerMovement : MonoBehaviour
         None,
         NPC,
         Movable,
+        PlaceObject,
         Portal,
         Wire
     }
@@ -27,6 +28,9 @@ public class PlayerMovement : MonoBehaviour
     public bool isConverseEnd { get; private set; }
 
     public bool isPressEnter { get; set; }
+    public bool isPickUpAlready { get; set; }
+    public bool isPutDownAlready { get; set; }
+
 
     public float turnSpeed = 80.0f;
     public float moveSpeed = 10.0f;
@@ -45,6 +49,8 @@ public class PlayerMovement : MonoBehaviour
     GameObject hitColliderObject;
 
     Rigidbody throwWeaponRigid;
+    Collider collider;
+    Collider objectCol;
 
     public ActionState currentAction { get; private set; }
 
@@ -52,6 +58,7 @@ public class PlayerMovement : MonoBehaviour
     {
         animator = GetComponent<Animator>();
         rigid = GetComponent<Rigidbody>();
+        collider = GetComponent<Collider>();
         gameManager = gameManagerObject.GetComponent<GameManager>();
     }
 
@@ -163,14 +170,16 @@ public class PlayerMovement : MonoBehaviour
         {
             isCanCooperate = true;
             currentAction = ActionState.NPC;
+            objectCol = hit.collider;
             hitColliderObject = hit.collider.gameObject;
             gameManager.SetPopUpUIType(layerMask);
             gameManager.SetPopUpActive(true, hit.collider.transform);
         }
         else
         {
-            if(isCanCooperate == true)
+            if(isCanCooperate == true && currentAction != ActionState.PlaceObject)
             {
+                Debug.Log("Ray : " + isCanCooperate);
                 currentAction = ActionState.None;
                 isCanCooperate = false;
             }
@@ -198,18 +207,6 @@ public class PlayerMovement : MonoBehaviour
         Gizmos.DrawLine(start, end);
     }
 
-    public void ChangeYAnimation()
-    {
-        switch (currentAction)
-        {
-            case ActionState.NPC:
-                animator.SetBool("Talking", true);
-                break;
-            case ActionState.Movable:
-                animator.SetBool("MovingStuff", true);
-                break;
-        }
-    }
 
     public void ConversationWithNPC(int num)
     {
@@ -223,6 +220,61 @@ public class PlayerMovement : MonoBehaviour
     public bool GetIsConverseAlready()
     {
         return gameManager.SendMessageAllRepresent();
+    }
+
+   public void ChangeActionMode(ActionState state)
+    {
+        currentAction = state;
+    }
+
+    public bool CompareSizeBigger()
+    {
+        if(objectCol.bounds.size.y >= collider.bounds.size.y)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    public void PickUp()
+    {
+        StartCoroutine(MakePickUpObject());
+    }
+
+    IEnumerator MakePickUpObject()
+    {
+        yield return new WaitForSeconds(0.85f);
+        playerWeapon.SetActive(false);
+        hitColliderObject.GetComponent<Rigidbody>().isKinematic = true;
+        hitColliderObject.transform.SetParent(weaponPos);
+        hitColliderObject.transform.localPosition = new Vector3(0.4f, 0, 0.25f);
+        hitColliderObject.transform.localRotation = Quaternion.Euler(0,0,180);
+        hitColliderObject.GetComponent<Collider>().isTrigger = true;
+        isPickUpAlready = true;
+    }
+
+    public void PutDown()
+    {
+        StartCoroutine(PutDownObject());
+    }
+
+    IEnumerator PutDownObject()
+    {
+        yield return new WaitForSeconds(0.25f);
+        hitColliderObject.transform.parent = null;
+        hitColliderObject.GetComponent<Collider>().isTrigger = false;
+        //hitColliderObject.transform.position = playerWeapon.transform.position + new Vector3(0.4f, 0, 0.2f);
+        hitColliderObject.GetComponent<Rigidbody>().isKinematic = false;
+        playerWeapon.SetActive(true);
+        isPutDownAlready = true;
+    }
+
+    public void MoveObject(Vector3 dir, float speed)
+    {
+        hitColliderObject.transform.Translate(dir * speed * Time.deltaTime * 0.5f);
     }
 
     void OnCollisionEnter(Collision collision)
@@ -239,16 +291,24 @@ public class PlayerMovement : MonoBehaviour
         {
             isCanCooperate = true;
             isColliderActive = true;
-            currentAction = ActionState.Movable;
-            hitColliderObject = collision.collider.gameObject;
-            gameManager.SetPopUpUIType(LayerMask.GetMask("Movable"));
+            if(currentAction != ActionState.PlaceObject)
+            {
+                currentAction = ActionState.Movable;
+                objectCol = collision.collider;
+                hitColliderObject = collision.collider.gameObject;
+                gameManager.SetPopUpUIType(LayerMask.GetMask("Movable"));
+            }
+            else
+            {
+                gameManager.SetUIPutObject();
+            }
             gameManager.SetPopUpActive(true, collision.collider.transform);
         }
     }
 
     private void OnCollisionExit(Collision collision)
     {
-        if(isCanCooperate == true)
+        if(isCanCooperate == true && currentAction == ActionState.Movable)
         {
             currentAction = ActionState.None;
             isCanCooperate = false;

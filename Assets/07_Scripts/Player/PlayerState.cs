@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering;
 using static PlayerMovement;
 
 public interface IPlayerState
@@ -56,18 +57,14 @@ public class IdleState : IPlayerState
             player.ChangeState(new ThrowWeaponState());
         }
 
-        if(player.isCanCooperate == true)
+        if(Input.GetKeyDown(KeyCode.Y))
         {
-            if (Input.GetKeyDown(KeyCode.Y))
+            if(player.isCanCooperate == true)
             {
                 player.ChangeState(new DoCooperateState());
-                // NPC와 대화
-                // 물건 밀기
-                // 물건 잡기
-                // 워프 안에 들어가기
-                // 물건 놓기/던지기
             }
-        }
+        }    
+        
     }
 
     public void FixedUpdateState(PlayerMovement player)
@@ -127,16 +124,12 @@ public class RunningState : IPlayerState
 
         if (Input.GetKeyDown(KeyCode.Y))
         {
-            if(player.isCanCooperate == true)
+            if (player.isCanCooperate == true)
             {
                 player.ChangeState(new DoCooperateState());
-                // NPC와 대화
-                // 물건 밀기
-                // 물건 잡기
-                // 워프 안에 들어가기
-                // 물건 놓기/던지기
             }
         }
+
     }
 
     public void FixedUpdateState(PlayerMovement player)
@@ -245,10 +238,10 @@ public class DoCooperateState : IPlayerState
     public void EnterState(PlayerMovement player)
     {
         spaceNum = 0;
-        player.ChangeYAnimation();
         if (player.currentAction == ActionState.NPC)
         {
             player.ConversationWithNPC(spaceNum);
+            player.animator.SetBool("Talking", true);
         }
     }
 
@@ -270,25 +263,26 @@ public class DoCooperateState : IPlayerState
 
         if(player.currentAction == ActionState.Movable)
         {
-            float v = Input.GetAxis("Vertical");
-            Debug.Log("v : " + v);
-            if (v != 0)
-            {
-                // 위에 떠올라 있는 Canvas 끄기
-                Debug.Log("움직이고 있음");
-                player.ChangeState(new MoveObjectState());
-            }
-            else
-            {
-                Debug.Log("IdleState로 돌아감");
-                player.ChangeState(new IdleState());
-            }
+            player.ChangeState(new MoveObjectState());
         }
     }
 
     public void FixedUpdateState(PlayerMovement player)
     {
-
+        if (player.currentAction == ActionState.PlaceObject)
+        {
+            if (player.CompareSizeBigger() == false)
+            {
+                player.animator.SetBool("PickUpObject", false);
+                player.PutDown();
+                if(player.isPutDownAlready == true)
+                {
+                    player.ChangeActionMode(PlayerMovement.ActionState.Movable);
+                    player.ChangeState(new IdleState());
+                    player.isPutDownAlready = false;
+                }
+            }
+        }
     }
 }
 
@@ -297,16 +291,51 @@ public class MoveObjectState : IPlayerState
     public void EnterState(PlayerMovement player)
     {
 
+        player.ChangeActionMode(PlayerMovement.ActionState.PlaceObject);
+
+        if(player.CompareSizeBigger() == false)
+        {
+            player.animator.SetBool("PickUpObject", true);
+            player.PickUp();
+        }
     }
 
     public void UpdateState(PlayerMovement player)
     {
-        Debug.Log("옮겨야 함");
+        float v = Input.GetAxis("Vertical");
+        if (v != 0)
+        {
+            player.animator.SetBool("MovingStuff", true);
+        }
+        else
+        {
+            player.animator.SetBool("MovingStuff", false);
+        }
+
+        if (Input.GetKeyDown(KeyCode.Y))
+        {
+            player.ChangeActionMode(PlayerMovement.ActionState.Movable);
+            player.ChangeState(new IdleState());
+        }
+
+        if (player.isPickUpAlready == true)
+        {
+            player.ChangeState(new IdleState());
+            player.isPickUpAlready = false;
+        }
     }
 
     public void FixedUpdateState(PlayerMovement player)
     {
+        float v = Input.GetAxis("Vertical");
+        Vector3 moveDir = player.transform.TransformDirection(Vector3.forward * v);
 
+        if(v != 0)
+        {
+            player.MoveObject(moveDir.normalized, player.moveSpeed);
+
+            player.transform.Translate(moveDir.normalized * player.moveSpeed * Time.deltaTime, Space.World);
+        }
     }
 }
 

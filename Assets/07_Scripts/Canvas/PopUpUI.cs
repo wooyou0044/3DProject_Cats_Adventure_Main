@@ -43,6 +43,9 @@ public class PopUpUI : MonoBehaviour
                     popUpImage.gameObject.SetActive(true);
                 }
                 break;
+            case PlayerMovement.ActionState.PlaceObject:
+                popUpText.text = "놓기";
+                break;
             case PlayerMovement.ActionState.Portal:
                 popUpText.fontSize = 45;
                 // 들어가기 - 나가기
