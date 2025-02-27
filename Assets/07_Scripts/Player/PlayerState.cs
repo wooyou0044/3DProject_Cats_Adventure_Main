@@ -270,19 +270,38 @@ public class DoCooperateState : IPlayerState
 
         if(player.currentAction == ActionState.Movable)
         {
-            Debug.Log(player.currentAction);
             float v = Input.GetAxis("Vertical");
             Debug.Log("v : " + v);
-            if(v != 0)
+            if (v != 0)
             {
                 // 위에 떠올라 있는 Canvas 끄기
                 Debug.Log("움직이고 있음");
+                player.ChangeState(new MoveObjectState());
             }
             else
             {
+                Debug.Log("IdleState로 돌아감");
                 player.ChangeState(new IdleState());
             }
         }
+    }
+
+    public void FixedUpdateState(PlayerMovement player)
+    {
+
+    }
+}
+
+public class MoveObjectState : IPlayerState
+{
+    public void EnterState(PlayerMovement player)
+    {
+
+    }
+
+    public void UpdateState(PlayerMovement player)
+    {
+        Debug.Log("옮겨야 함");
     }
 
     public void FixedUpdateState(PlayerMovement player)
