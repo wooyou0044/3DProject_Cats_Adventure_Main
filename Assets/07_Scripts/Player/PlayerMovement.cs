@@ -16,7 +16,7 @@ public class PlayerMovement : MonoBehaviour
         Wire
     }
     
-    public IPlayerState currentState;
+    IPlayerState currentState;
 
     public Animator animator { get; set; }
     public Rigidbody rigid { get; set; }
