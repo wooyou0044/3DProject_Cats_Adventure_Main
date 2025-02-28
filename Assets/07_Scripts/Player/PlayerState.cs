@@ -63,6 +63,13 @@ public class IdleState : IPlayerState
             {
                 player.ChangeState(new DoCooperateState());
             }
+
+            if(player.isInPortal == true)
+            {
+                player.animator.SetTrigger("MovePortal");
+                player.MoveIntoOtherWorld();
+                player.isInPortal = false;
+            }
         }    
         
     }
@@ -128,8 +135,14 @@ public class RunningState : IPlayerState
             {
                 player.ChangeState(new DoCooperateState());
             }
-        }
 
+            if (player.isInPortal == true)
+            {
+                player.animator.SetTrigger("MovePortal");
+                player.MoveIntoOtherWorld();
+                player.isInPortal = false;
+            }
+        }
     }
 
     public void FixedUpdateState(PlayerMovement player)
@@ -242,6 +255,8 @@ public class DoCooperateState : IPlayerState
         {
             player.ConversationWithNPC(spaceNum);
             player.animator.SetBool("Talking", true);
+            // NPC의 애니메이터 켜기
+            player.TurnOnNPCAnimator(true);
         }
     }
 
@@ -258,6 +273,7 @@ public class DoCooperateState : IPlayerState
 
         if (player.GetIsConverseAlready() == true && player.isConverseEnd == true)
         {
+            player.TurnOnNPCAnimator(false);
             player.ChangeState(new IdleState());
         }
 

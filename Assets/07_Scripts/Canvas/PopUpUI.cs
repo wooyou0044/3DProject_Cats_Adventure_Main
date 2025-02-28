@@ -47,12 +47,25 @@ public class PopUpUI : MonoBehaviour
                 popUpText.text = "놓기";
                 break;
             case PlayerMovement.ActionState.Portal:
-                popUpText.fontSize = 45;
+                popUpText.fontSize = 35;
                 // 들어가기 - 나가기
+                //popUpText.text = "들어가기";
                 break;
             case PlayerMovement.ActionState.Wire:
                 // 글자가 안 뜸
                 break;
+        }
+    }
+
+    public void ChangeWarpText(bool is3D)
+    {
+        if(is3D == true)
+        {
+            popUpText.text = "들어가기";
+        }
+        else
+        {
+            popUpText.text = "나가기";
         }
     }
 }

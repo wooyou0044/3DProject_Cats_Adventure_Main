@@ -8,6 +8,11 @@ public class GameManager : MonoBehaviour
     [SerializeField] Canvas popUpCanvas;
     [SerializeField] GameObject player;
     [SerializeField] Canvas NPCTalkCanvas;
+    [SerializeField] GameObject player2D;
+    [SerializeField] Transform[] mapTrans;
+
+    public bool isPlayer3D { get; set; }
+    public int currentMapNum { get; set; }
 
     PopUpUI popUpUI;
     ConversationUI conversationUI;
@@ -35,14 +40,7 @@ public class GameManager : MonoBehaviour
     {
         if (isActive == true && popUpObject != null)
         {
-            if(playerMove.SetHitObject().layer == LayerMask.NameToLayer("NPC"))
-            {
-                popUpCanvas.transform.position = popUpObject.position + new Vector3(0, 2.5f, 0);
-            }
-            else
-            {
-                popUpCanvas.transform.position = popUpObject.position + new Vector3(0, 3.5f, 0);
-            }
+            popUpCanvas.transform.position = popUpObject.position + new Vector3(0, playerMove.GetHitObjectSizeY() + 1.5f, 0);
         }
         if(isActive == true)
         {
@@ -71,11 +69,6 @@ public class GameManager : MonoBehaviour
         if (layerNum == LayerMask.GetMask("NPC"))
         {
             type = PlayerMovement.ActionState.NPC;
-        }
-
-        if(layerNum == LayerMask.GetMask("Movable"))
-        {
-            type = PlayerMovement.ActionState.Movable;
         }
 
         popUpUI.SetPopUpText(type);
@@ -131,5 +124,21 @@ public class GameManager : MonoBehaviour
     public void SetUIPutObject()
     {
         popUpUI.SetPopUpText(PlayerMovement.ActionState.PlaceObject);
+    }
+
+    public void SetPopUpUIByType(PlayerMovement.ActionState type, bool is3D = true)
+    {
+        if(type == PlayerMovement.ActionState.Portal)
+        {
+            popUpUI.ChangeWarpText(is3D);
+        }
+        popUpUI.SetPopUpText(type);
+    }
+
+    public void Make2DPlayer(int currentMapNum)
+    {
+        // 한 번만 만들도록 조건식 필요
+        Instantiate(player2D, mapTrans[currentMapNum].position + new Vector3(0,-2,-0.01f), Quaternion.identity, mapTrans[currentMapNum]);
+
     }
 }

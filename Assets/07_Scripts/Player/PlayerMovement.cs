@@ -1,9 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using Unity.Burst.CompilerServices;
 using UnityEngine;
-using static UnityEditor.Experimental.GraphView.GraphView;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -30,6 +27,7 @@ public class PlayerMovement : MonoBehaviour
     public bool isPressEnter { get; set; }
     public bool isPickUpAlready { get; set; }
     public bool isPutDownAlready { get; set; }
+    public bool isInPortal { get; set; }
 
 
     public float turnSpeed = 80.0f;
@@ -179,12 +177,11 @@ public class PlayerMovement : MonoBehaviour
         {
             if(isCanCooperate == true && currentAction != ActionState.PlaceObject)
             {
-                Debug.Log("Ray : " + isCanCooperate);
                 currentAction = ActionState.None;
                 isCanCooperate = false;
             }
 
-            if (gameManager.isCanvasOpen() == true)
+            if (gameManager.isCanvasOpen() == true && currentAction == ActionState.None)
             {
                 gameManager.SetPopUpActive(false);
             }
@@ -194,6 +191,21 @@ public class PlayerMovement : MonoBehaviour
     public GameObject SetHitObject()
     {
         return hitColliderObject == null ? null : hitColliderObject;
+    }
+
+    public float GetHitObjectSizeY()
+    {
+        if(objectCol == null)
+        {
+            return 0;
+        }
+        return objectCol.bounds.size.y;
+    }
+
+    public void TurnOnNPCAnimator(bool isActive)
+    {
+        hitColliderObject.transform.LookAt(gameObject.transform.position);
+        hitColliderObject.transform.GetComponentInChildren<Animator>().enabled = isActive;
     }
 
     private void OnDrawGizmos()
@@ -277,6 +289,20 @@ public class PlayerMovement : MonoBehaviour
         hitColliderObject.transform.Translate(dir * speed * Time.deltaTime * 0.5f);
     }
 
+    public void MoveIntoOtherWorld()
+    {
+        StartCoroutine(MoveToPortal());
+    }
+
+    IEnumerator MoveToPortal()
+    {
+        gameManager.SetPopUpUIByType(currentAction, false);
+        yield return new WaitForSeconds(0.5f);
+        gameObject.SetActive(false);
+        // 임시 2D Player 꺼내기 => mapNum 만들어야 함 (json이나 데이터 저장하는걸로 확인)
+        gameManager.Make2DPlayer(0);
+    }
+
     void OnCollisionEnter(Collision collision)
     {
         if(collision.gameObject.CompareTag("Floor"))
@@ -287,7 +313,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void OnCollisionStay(Collision collision)
     {
-        if(collision.gameObject.layer == LayerMask.NameToLayer("Movable"))
+        if(collision.gameObject.CompareTag("Movable") || collision.gameObject.layer == LayerMask.NameToLayer("Movable"))
         {
             isCanCooperate = true;
             isColliderActive = true;
@@ -296,7 +322,7 @@ public class PlayerMovement : MonoBehaviour
                 currentAction = ActionState.Movable;
                 objectCol = collision.collider;
                 hitColliderObject = collision.collider.gameObject;
-                gameManager.SetPopUpUIType(LayerMask.GetMask("Movable"));
+                gameManager.SetPopUpUIByType(currentAction);
             }
             else
             {
@@ -318,5 +344,42 @@ public class PlayerMovement : MonoBehaviour
         {
             isColliderActive = false;
         }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Portal"))
+        {
+            isInPortal = true;
+            currentAction = ActionState.Portal;
+            objectCol = null;
+            gameManager.SetPopUpUIByType(currentAction, true);
+            gameManager.SetPopUpActive(true, other.transform);
+        }
+    }
+
+    private void OnTriggerStay(Collider other)
+    {
+        if (other.gameObject.layer == LayerMask.NameToLayer("Movable"))
+        {
+            if(currentAction == ActionState.PlaceObject)
+            {
+                //gameManager.SetUIPutObject();
+                gameManager.SetPopUpActive(true, other.transform);
+            }
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if(isInPortal == true)
+        {
+            if (gameManager.isCanvasOpen() == true)
+            {
+                gameManager.SetPopUpActive(false);
+            }
+            isInPortal = false;
+        }
+
     }
 }
