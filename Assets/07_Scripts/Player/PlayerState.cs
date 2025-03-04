@@ -290,7 +290,8 @@ public class DoCooperateState : IPlayerState
             if (player.CompareSizeBigger() == false)
             {
                 player.animator.SetBool("PickUpObject", false);
-                player.PutDown();
+                player.PutDown(player.isComplete);
+                player.isComplete = false;
                 if(player.isPutDownAlready == true)
                 {
                     player.ChangeActionMode(PlayerMovement.ActionState.Movable);
@@ -312,6 +313,10 @@ public class MoveObjectState : IPlayerState
         if(player.CompareSizeBigger() == false)
         {
             player.animator.SetBool("PickUpObject", true);
+        }
+
+        if(player.isComplete == false)
+        {
             player.PickUp();
         }
     }
@@ -336,6 +341,7 @@ public class MoveObjectState : IPlayerState
 
         if (player.isPickUpAlready == true)
         {
+
             player.ChangeState(new IdleState());
             player.isPickUpAlready = false;
         }

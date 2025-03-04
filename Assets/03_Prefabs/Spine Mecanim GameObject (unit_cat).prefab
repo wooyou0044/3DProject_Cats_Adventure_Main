@@ -14,12 +14,12 @@ GameObject:
   - component: {fileID: 4923136978216221514}
   - component: {fileID: 4305968061094884687}
   - component: {fileID: 6975742403815053113}
-  - component: {fileID: 8085850530155840202}
   - component: {fileID: 4379479700082947449}
   - component: {fileID: 1406414322291118662}
+  - component: {fileID: 2262016342684642405}
   m_Layer: 0
   m_Name: Spine Mecanim GameObject (unit_cat)
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -168,21 +168,6 @@ MonoBehaviour:
   flipBy180DegreeRotation: 0
   skeletonRenderer: {fileID: 4305968061094884687}
   skeletonGraphic: {fileID: 0}
---- !u!114 &8085850530155840202
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 552365740037569425}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8bc602f6a869d7642a40fdd601bd5166, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  moveSpeed: 5
-  rigid: {fileID: 0}
-  animator: {fileID: 0}
 --- !u!65 &4379479700082947449
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -229,8 +214,37 @@ Rigidbody:
   m_UseGravity: 0
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 112
+  m_Constraints: 120
   m_CollisionDetection: 0
+--- !u!114 &2262016342684642405
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 552365740037569425}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9ce98fc056fb5a48ad1c17d0591e7be, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  turnSpeed: 80
+  moveSpeed: 5
+  jumpHeight: 5
+  poolSize: 10
+  currentMode: 0
+  normalAttackNum: 5
+  throwAttackNum: 7
+  gameManagerObject: {fileID: 3341776207056561002, guid: 03605b0adbeec35428ea5a833a3ff5a3, type: 3}
+  playerWeapon: {fileID: 0}
+  weaponPos: {fileID: 0}
+  eyeTrans: {fileID: 0}
+  weaponThrowPower: 0
+  slotNameToHide: shd
+  weaponName:
+  - sd
+  - ef
+  armName: arm3
 --- !u!1 &7893530168097891758
 GameObject:
   m_ObjectHideFlags: 0

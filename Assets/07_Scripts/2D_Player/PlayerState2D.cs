@@ -4,21 +4,20 @@ using UnityEngine;
 
 public interface IPlayer2DState
 {
-    public void EnterState(PlayerMovement2D player);
-    public void UpdateState(PlayerMovement2D player);
-    public void FixedUpdateState(PlayerMovement2D player);
+    void EnterState(PlayerMovement2D player);
+    void UpdateState(PlayerMovement2D player);
+    void FixedUpdateState(PlayerMovement2D player);
 }
 
-public class IdleState2D : IPlayer2DState
+public class IdleState2D : IPlayerState
 {
-    public void EnterState(PlayerMovement2D player)
+    public void EnterState(PlayerMovement player)
     {
-        player.RemoveShield();
         player.animator.SetBool("Running", false);
         player.animator.SetBool("Attacking", false);
     }
 
-    public void UpdateState(PlayerMovement2D player)
+    public void UpdateState(PlayerMovement player)
     {
         float v = Input.GetAxis("Vertical");
         float h = Input.GetAxis("Horizontal");
@@ -35,29 +34,43 @@ public class IdleState2D : IPlayer2DState
 
         if (Input.GetKeyDown(KeyCode.Y))
         {
-            // 줍는 것
-            //player.ChangeState(new PickUpState2D());
+            Debug.Log(player.isCanCooperate);
+            if(player.isCanCooperate)
+            {
+                // 줍는 것
+                player.ChangeState(new PickUpState2D());
+            }
             // 워프 이동
+            if (player.isInPortal == true)
+            {
+                player.animator.SetTrigger("MoveToPortal");
+                player.MoveIntoOtherWorld(false);
+                player.isInPortal = false;
+            }
 
             // 와이어 이동 
         }
+
+        if(Input.GetKeyDown(KeyCode.Space) && player.isFloor)
+        {
+            player.ChangeState(new JumpState2D());
+        }
     }
 
-    public void FixedUpdateState(PlayerMovement2D player)
+    public void FixedUpdateState(PlayerMovement player)
     {
-
+        //player.rigid.velocity = new Vector2(0, 0);
     }
 }
 
-public class RunState2D : IPlayer2DState
+public class RunState2D : IPlayerState
 {
-    public void EnterState(PlayerMovement2D player)
+    public void EnterState(PlayerMovement player)
     {
-        player.RemoveShield();
         player.animator.SetBool("Running", true);
     }
 
-    public void UpdateState(PlayerMovement2D player)
+    public void UpdateState(PlayerMovement player)
     {
         float v = Input.GetAxis("Vertical");
         float h = Input.GetAxis("Horizontal");
@@ -87,33 +100,47 @@ public class RunState2D : IPlayer2DState
         if(Input.GetKeyDown(KeyCode.Y))
         {
             // 줍는 것
-            //player.ChangeState(new PickUpState2D());
+            if (player.isCanCooperate)
+            {
+                // 줍는 것
+                player.ChangeState(new PickUpState2D());
+            }
+            // 워프 이동
+            if (player.isInPortal == true)
+            {
+                player.animator.SetTrigger("MoveToPortal");
+                player.MoveIntoOtherWorld(false);
+                player.isInPortal = false;
+            }
             // 워프 이동
 
             // 와이어 이동 
         }
+
+        if (player.isPickUpAlready == true)
+        {
+            player.MoveAttachObject();
+        }
     }
 
-    public void FixedUpdateState(PlayerMovement2D player)
+    public void FixedUpdateState(PlayerMovement player)
     {
-        float v = Input.GetAxis("Vertical");
-        float h = Input.GetAxis("Horizontal");
+        float v = Input.GetAxisRaw("Vertical");
+        float h = Input.GetAxisRaw("Horizontal");
 
-        Vector3 moveDir = ((Vector3.up * v) + (Vector3.right * h));
-        //player.transform.Translate(moveDir * player.moveSpeed * Time.deltaTime);
+        Vector3 moveDir = (Vector3.up * v) + (Vector3.right * h);
         player.rigid.velocity = new Vector2(h * player.moveSpeed, v * player.moveSpeed);
     }
 }
 
-public class AttackState2D : IPlayer2DState
+public class AttackState2D : IPlayerState
 {
-    public void EnterState(PlayerMovement2D player)
+    public void EnterState(PlayerMovement player)
     {
-        player.RemoveShield();
         player.animator.SetBool("Attacking", true);
     }
 
-    public void UpdateState(PlayerMovement2D player)
+    public void UpdateState(PlayerMovement player)
     {
         float v = Input.GetAxis("Vertical");
         float h = Input.GetAxis("Horizontal");
@@ -130,37 +157,74 @@ public class AttackState2D : IPlayer2DState
 
     }
 
-    public void FixedUpdateState(PlayerMovement2D player)
+    public void FixedUpdateState(PlayerMovement player)
     {
+        player.rigid.velocity = new Vector2(0, 0);
     }
 }
 
-public class PickUpState2D : IPlayer2DState
+public class JumpState2D : IPlayerState
 {
-    public void EnterState(PlayerMovement2D player)
+    public void EnterState(PlayerMovement player)
     {
+        player.animator.SetTrigger("Jumping");
+        player.rigid.AddForce(Vector2.up * player.jumpHeight, ForceMode.Impulse);
+        player.StopJumping();
     }
 
-    public void UpdateState(PlayerMovement2D player)
+    public void UpdateState(PlayerMovement player)
     {
+        if (player.rigid.velocity.y <= 0)
+        {
+            player.isFloor = false;
+            player.ChangeState(new IdleState2D());
+        }
     }
 
-    public void FixedUpdateState(PlayerMovement2D player)
+    public void FixedUpdateState(PlayerMovement player)
     {
+        if (player.isFloor == true)
+        {
+            player.isFloor = false;
+        }
+    }
+
+}
+
+public class PickUpState2D : IPlayerState
+{
+    public void EnterState(PlayerMovement player)
+    {
+        //player.animator.SetBool("PickUp", true);
+        player.MakeWeaponHide();
+        player.AttachObjectToArm();
+        player.SetUIActive(false);
+        player.isPickUpAlready = true;
+        player.ChangeState(new IdleState2D());
+    }
+
+    public void UpdateState(PlayerMovement player)
+    {
+
+    }
+
+    public void FixedUpdateState(PlayerMovement player)
+    {
+        player.MoveAttachObject();
     }
 }
 
-public class WireMove2D : IPlayer2DState
+public class WireMove2D : IPlayerState
 {
-    public void EnterState(PlayerMovement2D player)
+    public void EnterState(PlayerMovement player)
     {
     }
 
-    public void UpdateState(PlayerMovement2D player)
+    public void UpdateState(PlayerMovement player)
     {
     }
 
-    public void FixedUpdateState(PlayerMovement2D player)
+    public void FixedUpdateState(PlayerMovement player)
     {
     }
 }

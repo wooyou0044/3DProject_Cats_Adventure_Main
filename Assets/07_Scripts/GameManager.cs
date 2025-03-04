@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Cinemachine;
 
 public class GameManager : MonoBehaviour
 {
@@ -11,12 +12,23 @@ public class GameManager : MonoBehaviour
     [SerializeField] GameObject player2D;
     [SerializeField] Transform[] mapTrans;
 
-    public bool isPlayer3D { get; set; }
+    [SerializeField] GameObject trampolineObject;
+    [SerializeField] GameObject keyObject;
+    [SerializeField] CinemachineVirtualCamera virtualCam;
+    [SerializeField] CinemachineVirtualCamera virtualCam2D;
+
+    public bool isHaveKey { get; set; }
     public int currentMapNum { get; set; }
+    public PickUpObjectType pickUpType { get; set; }
+    public GameObject key { get; set; }
+    public int enemyNum { get; set; }
+
+    GameObject overPortalObject;
 
     PopUpUI popUpUI;
     ConversationUI conversationUI;
     PlayerMovement playerMove;
+    public PortalController portalController { get; private set; }
 
     private void Awake()
     {
@@ -135,10 +147,46 @@ public class GameManager : MonoBehaviour
         popUpUI.SetPopUpText(type);
     }
 
-    public void Make2DPlayer(int currentMapNum)
+    public void Make2DPlayer()
     {
+        portalController = playerMove.portalCtrl;
         // 한 번만 만들도록 조건식 필요
-        Instantiate(player2D, mapTrans[currentMapNum].position + new Vector3(0,-2,-0.01f), Quaternion.identity, mapTrans[currentMapNum]);
+        GameObject player = Instantiate(player2D, mapTrans[currentMapNum].position + new Vector3(0,-2,-0.38f), Quaternion.identity, mapTrans[currentMapNum]);
+        virtualCam.gameObject.SetActive(false);
+        virtualCam2D.Follow = player.transform;
+        //Instantiate(player2D, mapPortalPos.position + new Vector3(0,-2,-0.01f), Quaternion.identity, mapTrans[currentMapNum]);
+        if(isHaveKey == true)
+        {
+            playerMove = player.GetComponent<PlayerMovement>();
+            playerMove.MakeWeaponHide();
+            GameObject object2D = keyObject.GetComponent<ObjectController>().objectType.pick2DObject;
+            key = Instantiate(object2D, mapTrans[currentMapNum].position + new Vector3(0, -2, -0.01f), Quaternion.identity, mapTrans[currentMapNum]);
+            key.GetComponent<Collider>().isTrigger = true;
+            playerMove.attachObjectPos = key.transform;
+            playerMove.AttachObjectToArm();
+            playerMove.isPickUpAlready = true;
+            //isHaveKey = false;
+        }
+    }
 
+    public void Set3DObjectActive(bool isActive)
+    {
+        player.SetActive(isActive);
+        if (pickUpType == PickUpObjectType.Trampoline)
+        {
+            overPortalObject = Instantiate(trampolineObject);
+            isHaveKey = false;
+        }
+        else
+        {
+            overPortalObject = Instantiate(keyObject);
+            isHaveKey = true;
+        }
+        virtualCam.gameObject.SetActive(true);
+        playerMove.isComplete = true;
+        playerMove.MakePickUpObject(overPortalObject, true);
+        playerMove.isPickUpAlready = true;
+        playerMove.isCanCooperate = true;
+        playerMove.ChangeState(new MoveObjectState());
     }
 }

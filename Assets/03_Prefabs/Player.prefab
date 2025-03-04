@@ -3283,6 +3283,7 @@ GameObject:
   - component: {fileID: 5815734038429672501}
   - component: {fileID: 5851609981418969049}
   - component: {fileID: 6743770431460506724}
+  - component: {fileID: 2722500890772908920}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -3344,11 +3345,15 @@ MonoBehaviour:
   moveSpeed: 5
   jumpHeight: 7.5
   poolSize: 10
+  currentMode: 1
   gameManagerObject: {fileID: 0}
   playerWeapon: {fileID: 2024978389152588018}
   weaponPos: {fileID: 4406586891948215016}
   eyeTrans: {fileID: 300774199280247317}
   weaponThrowPower: 1.2
+  slotNameToHide: 
+  weaponName: []
+  armName: 
 --- !u!54 &5851609981418969049
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -3399,6 +3404,27 @@ CapsuleCollider:
   m_Height: 1.51
   m_Direction: 1
   m_Center: {x: 0, y: 0.8, z: 0}
+--- !u!135 &2722500890772908920
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9009975920553077293}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 0.44
+  m_Center: {x: 0, y: 1.23, z: 0.04}
 --- !u!1001 &3427001038465485321
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3407,6 +3433,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 4406586891948215016}
     m_Modifications:
+    - target: {fileID: 2490870806616779275, guid: 48514cb45a1be6f40be31db1ace00e79, type: 3}
+      propertyPath: playerMove
+      value: 
+      objectReference: {fileID: 5815734038429672501}
     - target: {fileID: 3716890623151254267, guid: 48514cb45a1be6f40be31db1ace00e79, type: 3}
       propertyPath: m_Name
       value: Dried_fish
@@ -3451,17 +3481,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8438199231381726718, guid: 48514cb45a1be6f40be31db1ace00e79, type: 3}
-      propertyPath: m_IsKinematic
-      value: 1
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 3716890623151254267, guid: 48514cb45a1be6f40be31db1ace00e79, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 4780092777051760868}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 48514cb45a1be6f40be31db1ace00e79, type: 3}
 --- !u!4 &1680400874183604808 stripped
 Transform:
@@ -3473,16 +3496,3 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 3716890623151254267, guid: 48514cb45a1be6f40be31db1ace00e79, type: 3}
   m_PrefabInstance: {fileID: 3427001038465485321}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &4780092777051760868
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2024978389152588018}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e13c82ebbc7be6f47ad7fc1f29bb77f8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  playerMove: {fileID: 5815734038429672501}

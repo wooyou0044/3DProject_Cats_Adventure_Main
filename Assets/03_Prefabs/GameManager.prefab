@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 3646582519473768561}
   m_Layer: 0
   m_Name: GameManager
-  m_TagString: Untagged
+  m_TagString: GameController
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -47,3 +47,8 @@ MonoBehaviour:
   popUpCanvas: {fileID: 0}
   player: {fileID: 0}
   NPCTalkCanvas: {fileID: 0}
+  player2D: {fileID: 552365740037569425, guid: 73b87a7f049faf9418acecfef481ecbe, type: 3}
+  mapTrans:
+  - {fileID: 0}
+  trampolineObject: {fileID: 463894735973614313, guid: 2c603e3bcd979c842adc62bcb5dc1c03, type: 3}
+  keyObject: {fileID: 1063146145924501382, guid: 56cf65e4cd504094d8ba92e00c79b710, type: 3}
