@@ -4,9 +4,9 @@ using UnityEngine;
 
 public interface IPlayer2DState
 {
-    void EnterState(PlayerMovement2D player);
-    void UpdateState(PlayerMovement2D player);
-    void FixedUpdateState(PlayerMovement2D player);
+    void EnterState(PlayerMovement player);
+    void UpdateState(PlayerMovement player);
+    void FixedUpdateState(PlayerMovement player);
 }
 
 public class IdleState2D : IPlayerState
@@ -47,8 +47,6 @@ public class IdleState2D : IPlayerState
                 player.MoveIntoOtherWorld(false);
                 player.isInPortal = false;
             }
-
-            // 와이어 이동 
         }
 
         if(Input.GetKeyDown(KeyCode.Space) && player.isFloor)

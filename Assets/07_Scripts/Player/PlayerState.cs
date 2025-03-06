@@ -255,7 +255,6 @@ public class DoCooperateState : IPlayerState
         {
             player.ConversationWithNPC(spaceNum);
             player.animator.SetBool("Talking", true);
-            // NPC의 애니메이터 켜기
             player.TurnOnNPCAnimator(true);
         }
     }
@@ -341,7 +340,6 @@ public class MoveObjectState : IPlayerState
 
         if (player.isPickUpAlready == true)
         {
-
             player.ChangeState(new IdleState());
             player.isPickUpAlready = false;
         }

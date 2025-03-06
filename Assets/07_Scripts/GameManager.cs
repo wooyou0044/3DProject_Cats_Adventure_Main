@@ -154,7 +154,6 @@ public class GameManager : MonoBehaviour
         GameObject player = Instantiate(player2D, mapTrans[currentMapNum].position + new Vector3(0,-2,-0.38f), Quaternion.identity, mapTrans[currentMapNum]);
         virtualCam.gameObject.SetActive(false);
         virtualCam2D.Follow = player.transform;
-        //Instantiate(player2D, mapPortalPos.position + new Vector3(0,-2,-0.01f), Quaternion.identity, mapTrans[currentMapNum]);
         if(isHaveKey == true)
         {
             playerMove = player.GetComponent<PlayerMovement>();
@@ -165,7 +164,6 @@ public class GameManager : MonoBehaviour
             playerMove.attachObjectPos = key.transform;
             playerMove.AttachObjectToArm();
             playerMove.isPickUpAlready = true;
-            //isHaveKey = false;
         }
     }
 

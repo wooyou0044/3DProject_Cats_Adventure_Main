@@ -3346,6 +3346,8 @@ MonoBehaviour:
   jumpHeight: 7.5
   poolSize: 10
   currentMode: 1
+  normalAttackNum: 5
+  throwAttackNum: 7
   gameManagerObject: {fileID: 0}
   playerWeapon: {fileID: 2024978389152588018}
   weaponPos: {fileID: 4406586891948215016}
