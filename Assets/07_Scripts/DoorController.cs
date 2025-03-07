@@ -1,10 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 public class DoorController : MonoBehaviour
 {
     [SerializeField] GameObject door;
+    [SerializeField] GameObject portal;
     PlayerMovement player;
     Collider doorCol;
     Collider doorCol3D;
@@ -45,7 +47,7 @@ public class DoorController : MonoBehaviour
             {
                 doorAni.enabled = true;
                 doorCol.isTrigger = true;
-                player.TurnOffPortal();
+                portal.SetActive(false);
                 StartCoroutine(DoorOpen());
             }
         }

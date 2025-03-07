@@ -489,11 +489,6 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    public void TurnOffPortal()
-    {
-        gameManager.portalController.transform.parent.gameObject.SetActive(false);
-    }
-
     public void SetUIActive(bool isActive)
     {
         gameManager.SetPopUpActive(isActive);

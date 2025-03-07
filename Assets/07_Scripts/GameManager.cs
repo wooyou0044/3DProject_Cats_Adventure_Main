@@ -150,8 +150,11 @@ public class GameManager : MonoBehaviour
     public void Make2DPlayer()
     {
         portalController = playerMove.portalCtrl;
+        Vector3 portalTrans = portalController.transform.position;
+
         // 한 번만 만들도록 조건식 필요
-        GameObject player = Instantiate(player2D, mapTrans[currentMapNum].position + new Vector3(0,-2,-0.38f), Quaternion.identity, mapTrans[currentMapNum]);
+        //GameObject player = Instantiate(player2D, mapTrans[currentMapNum].position + new Vector3(0,-2,-0.38f), Quaternion.identity, mapTrans[currentMapNum]);
+        GameObject player = Instantiate(player2D, portalTrans + new Vector3(0, 2, 0.18f), Quaternion.identity, portalController.transform.parent);
         virtualCam.gameObject.SetActive(false);
         virtualCam2D.Follow = player.transform;
         if(isHaveKey == true)
@@ -159,7 +162,8 @@ public class GameManager : MonoBehaviour
             playerMove = player.GetComponent<PlayerMovement>();
             playerMove.MakeWeaponHide();
             GameObject object2D = keyObject.GetComponent<ObjectController>().objectType.pick2DObject;
-            key = Instantiate(object2D, mapTrans[currentMapNum].position + new Vector3(0, -2, -0.01f), Quaternion.identity, mapTrans[currentMapNum]);
+            //key = Instantiate(object2D, mapTrans[currentMapNum].position + new Vector3(0, -2, -0.01f), Quaternion.identity, mapTrans[currentMapNum]);
+            key = Instantiate(object2D, portalTrans + new Vector3(0, 2, -0.01f), Quaternion.identity, portalController.transform.parent);
             key.GetComponent<Collider>().isTrigger = true;
             playerMove.attachObjectPos = key.transform;
             playerMove.AttachObjectToArm();
