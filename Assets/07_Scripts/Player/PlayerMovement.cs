@@ -37,6 +37,7 @@ public class PlayerMovement : MonoBehaviour
     public bool isPutDownAlready { get; set; }
     public bool isInPortal { get; set; }
     public bool isComplete { get; set; }
+    public bool isHaveSomething { get; set; }
 
 
     public float turnSpeed = 80.0f;
@@ -99,6 +100,7 @@ public class PlayerMovement : MonoBehaviour
         rigid.freezeRotation = true;
         isFloor = true;
         isThrow = false;
+        gameManager.pickUpType = PickUpObjectType.None;
 
         if(currentMode == PlayerMode.Mode_3D)
         {
@@ -354,6 +356,7 @@ public class PlayerMovement : MonoBehaviour
     {
         if(isComplete == true)
         {
+            Debug.Log(hitColliderObject);
             hitColliderObject = objectCol.gameObject;
         }
         StartCoroutine(PutDownObject());
@@ -399,14 +402,26 @@ public class PlayerMovement : MonoBehaviour
             gameManager.Make2DPlayer();
             // 키 들고 들어가면 손에 생성한채로 들어감
         }
-        else
+        //else
+        //{
+        //    portalCtrl.gameObject.SetActive(false);
+        //    portalCtrl.pickUpObject.SetActive(false);
+        //    gameManager.pickUpType = portalCtrl.objectType;
+        //    gameManager.Set3DObjectActive(true);
+        //    portalCtrl.isTaskComplete = false;
+        //}
+        else if(isPickUpAlready == true)
         {
             portalCtrl.gameObject.SetActive(false);
             portalCtrl.pickUpObject.SetActive(false);
             gameManager.pickUpType = portalCtrl.objectType;
             gameManager.Set3DObjectActive(true);
             portalCtrl.isTaskComplete = false;
-            gameManager.currentMapNum++;
+        }
+
+        if(is3D == false && isPickUpAlready == false)
+        {
+            gameManager.Set3DObjectActive(true);
         }
         currentAction = ActionState.None;
         gameManager.SetPopUpActive(false);
@@ -528,7 +543,6 @@ public class PlayerMovement : MonoBehaviour
         if(collision.gameObject.CompareTag("Movable") || collision.gameObject.layer == LayerMask.NameToLayer("Movable"))
         {
             isCanCooperate = true;
-            Debug.Log("PlayerMovement.isCanCooperate : " + isCanCooperate);
             isColliderActive = true;
             if(currentAction != ActionState.PlaceObject)
             {

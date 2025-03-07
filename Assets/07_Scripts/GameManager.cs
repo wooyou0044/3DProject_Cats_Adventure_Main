@@ -18,7 +18,6 @@ public class GameManager : MonoBehaviour
     [SerializeField] CinemachineVirtualCamera virtualCam2D;
 
     public bool isHaveKey { get; set; }
-    public int currentMapNum { get; set; }
     public PickUpObjectType pickUpType { get; set; }
     public GameObject key { get; set; }
     public int enemyNum { get; set; }
@@ -178,17 +177,27 @@ public class GameManager : MonoBehaviour
         {
             overPortalObject = Instantiate(trampolineObject);
             isHaveKey = false;
+            playerMove.MakePickUpObject(overPortalObject, true);
+            playerMove.isCanCooperate = true;
+            playerMove.isPickUpAlready = true;
+            playerMove.isComplete = true;
+            playerMove.ChangeState(new MoveObjectState());
         }
-        else
+        else if(pickUpType == PickUpObjectType.Key)
         {
             overPortalObject = Instantiate(keyObject);
             isHaveKey = true;
+            playerMove.MakePickUpObject(overPortalObject, true);
+            playerMove.isCanCooperate = true;
+            playerMove.isPickUpAlready = true;
+            playerMove.isComplete = true;
+            playerMove.ChangeState(new MoveObjectState());
+        }
+        else
+        {
+            isHaveKey = false;
         }
         virtualCam.gameObject.SetActive(true);
-        playerMove.isComplete = true;
-        playerMove.MakePickUpObject(overPortalObject, true);
-        playerMove.isPickUpAlready = true;
-        playerMove.isCanCooperate = true;
-        playerMove.ChangeState(new MoveObjectState());
+        //playerMove.isComplete = true;
     }
 }

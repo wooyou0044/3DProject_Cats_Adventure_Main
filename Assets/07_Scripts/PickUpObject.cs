@@ -4,6 +4,7 @@ using UnityEngine;
 
 public enum PickUpObjectType
 {
+    None,
     Key,
     Trampoline
 }
