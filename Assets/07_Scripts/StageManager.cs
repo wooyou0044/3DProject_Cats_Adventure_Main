@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Cinemachine;
 
-public class GameManager : MonoBehaviour
+public class StageManager : MonoBehaviour
 {
     [SerializeField] Canvas popUpCanvas;
     [SerializeField] GameObject player;

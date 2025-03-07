@@ -62,7 +62,7 @@ public class PlayerMovement : MonoBehaviour
     [SpineSlot] public string[] weaponName;
     [SpineSlot] public string armName;
 
-    GameManager gameManager;
+    StageManager gameManager;
     public PortalController portalCtrl { get; private set; }
 
     GameObject throwWeapon;
@@ -86,12 +86,12 @@ public class PlayerMovement : MonoBehaviour
 
         if(currentMode == PlayerMode.Mode_2D)
         {
-            gameManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameManager>();
+            gameManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<StageManager>();
             skeletonMecanim = animator.GetComponent<SkeletonMecanim>();
         }
         else
         {
-            gameManager = gameManagerObject.GetComponent<GameManager>();
+            gameManager = gameManagerObject.GetComponent<StageManager>();
         }
     }
 

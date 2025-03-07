@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 8198004537398233400}
   - component: {fileID: 3646582519473768561}
   m_Layer: 0
-  m_Name: GameManager
+  m_Name: StageManager
   m_TagString: GameController
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -52,3 +52,5 @@ MonoBehaviour:
   - {fileID: 0}
   trampolineObject: {fileID: 463894735973614313, guid: 2c603e3bcd979c842adc62bcb5dc1c03, type: 3}
   keyObject: {fileID: 1063146145924501382, guid: 56cf65e4cd504094d8ba92e00c79b710, type: 3}
+  virtualCam: {fileID: 0}
+  virtualCam2D: {fileID: 0}
