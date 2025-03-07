@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9c336fdf4cecc9244817f6020cec6a76, type: 3}
   m_Name: Key
   m_EditorClassIdentifier: 
-  type: 0
+  type: 1
   prefabObject: {fileID: 1063146145924501382, guid: 56cf65e4cd504094d8ba92e00c79b710, type: 3}
   pick2DObject: {fileID: 8417016880599252634, guid: 062685b1eb29aff458f87d89f7c2d24a, type: 3}

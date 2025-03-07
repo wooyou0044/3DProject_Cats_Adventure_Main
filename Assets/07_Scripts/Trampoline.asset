@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9c336fdf4cecc9244817f6020cec6a76, type: 3}
   m_Name: Trampoline
   m_EditorClassIdentifier: 
-  type: 1
+  type: 2
   prefabObject: {fileID: 463894735973614313, guid: 2c603e3bcd979c842adc62bcb5dc1c03, type: 3}
   pick2DObject: {fileID: 6454634537283958950, guid: d274398d58997d54eae59b0dc410c6b9, type: 3}
