@@ -72,5 +72,6 @@ public class DoorController : MonoBehaviour
         player.gameObject.SetActive(false);
         yield return new WaitForSeconds(3f);
         doorCol3D.isTrigger = false;
+        SceneController.Instance.MoveTitleScene();
     }
 }

@@ -46,6 +46,11 @@ public class WeaponCtrl : MonoBehaviour
             }
         }
 
+        if(playerMove == null)
+        {
+            return;
+        }
+
         if (other.gameObject.tag == "Player" && playerMove.isThrow == true)
         {
             isBumped = false;

@@ -321,7 +321,6 @@ public class PlayerMovement : MonoBehaviour
         //hitColliderObject.transform.localRotation = Quaternion.Euler(0,0,180);
         //hitColliderObject.GetComponent<Collider>().isTrigger = true;
         MakePickUpObject(hitColliderObject);
-        isPickUpAlready = true;
     }
 
     public void MakePickUpObject(GameObject gameObject, bool isWorldChange = false)
@@ -331,6 +330,10 @@ public class PlayerMovement : MonoBehaviour
             objectCol = gameObject.GetComponent<Collider>();
         }
         playerWeapon.SetActive(false);
+        if(gameObject.GetComponent<Rigidbody>() == null)
+        {
+            return;
+        }
         gameObject.GetComponent<Rigidbody>().isKinematic = true;
         gameObject.transform.SetParent(weaponPos);
         if(isWorldChange == false)
@@ -350,6 +353,7 @@ public class PlayerMovement : MonoBehaviour
         }
         gameObject.transform.localRotation = Quaternion.Euler(0, 0, 180);
         gameObject.GetComponent<Collider>().isTrigger = true;
+        isPickUpAlready = true;
     }
 
     public void PutDown(bool isComplete = false)
@@ -370,8 +374,17 @@ public class PlayerMovement : MonoBehaviour
 
         StartCoroutine(TurnOffKinematic());
         //hitColliderObject.GetComponent<Rigidbody>().isKinematic = false;
-        //playerWeapon.SetActive(true);
+        playerWeapon.SetActive(true);
         isPutDownAlready = true;
+    }
+
+    public void TurnOnWeapon()
+    {
+        if(playerWeapon.activeSelf == true)
+        {
+            return;
+        }
+        playerWeapon.SetActive(true);
     }
 
     IEnumerator TurnOffKinematic()

@@ -336,6 +336,7 @@ public class MoveObjectState : IPlayerState
         {
             player.ChangeActionMode(PlayerMovement.ActionState.Movable);
             player.ChangeState(new IdleState());
+            player.TurnOnWeapon();
         }
 
         if (player.isPickUpAlready == true)
